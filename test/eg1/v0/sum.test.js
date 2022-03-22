@@ -1,10 +1,7 @@
 const statement = require('../../../src/eg1/v0/statement')
-// var invoices_json = require('../../../resource/invoices.js');
-// var plays_json = require('../../../resource/plays.js');
-
 
 test("statement", () => {
-    var invoices_json =
+    var invoices =
         {
             "customer": "BigCo",
             "performances": [
@@ -30,7 +27,7 @@ test("statement", () => {
         }
 
     function sta() {
-        let result = statement(invoices_json, plays_json);
+        let result = statement(invoices, plays_json);
         console.log(result);
         return result;
     }
