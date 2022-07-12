@@ -1,4 +1,4 @@
-const statement = require('../../../src/eg1/v0/statement')
+const statement = require('../../src/eg1/statement')
 
 test("statement", () => {
     var invoices =
