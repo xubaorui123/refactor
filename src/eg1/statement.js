@@ -1,26 +1,21 @@
 /**
- * 第二步改造  移除局部参数play,thisAmount,volumeCredits,usd
+ * 第三步改造 重构volumeCredits
  *
- * 观察amountFor函数时，我会看看它的参数都从哪里来。
- * aPerformance是从循环变量中来，所以自然每次循环都会改变，
- * 但play变量是由performance变量计算得到的，
- * 因此根本没必要将它作为参数传入，我可以在amountFor函数中重新计算得到它。
- *
- *
- * 移除局部变量的好处就是做提炼时会简单得多,因为需要操心的局部作用域变少了
+ * 1.拆分循环
+ * 2.移动语句,将变量声明挪动到紧邻循环的位置
+ * 3.将变量的计算过程提炼成函数
  */
 function statement(invoice, plays) {
     let totalAmount = 0;
-    let volumeCredits = 0;
+
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
-
-        volumeCredits += volumeCreditsFor(perf);
-
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
+    let volumeCredits = totalVolumeCredits();
+
     result += `Amount owed is ${usd(totalAmount / 100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
@@ -77,6 +72,15 @@ function statement(invoice, plays) {
                 minimumFractionDigits: 2
             }).format(aNumber);
     }
+
+    function totalVolumeCredits() {
+        let volumeCredits = 0;
+        for (let perf of invoice.performances) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
+    }
+
 }
 
 
