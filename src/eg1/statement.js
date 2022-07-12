@@ -1,3 +1,9 @@
+/**
+ * 第一步改造
+ * “看到这样长长的函数，我便下意识地想从整个函数中分离出不同的关注点”
+ *
+ *  查看代码时,发现这部分可能是用作计算一场演出的费用
+ */
 function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
@@ -9,8 +15,12 @@ function statement(invoice, plays) {
         }).format;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
-        let thisAmount = 0;
 
+
+        /*
+        * 首先分离计算金额部分函数
+        *
+        *  let thisAmount = 0;
         switch (play.type) {
             case "tragedy":
                 thisAmount = 40000;
@@ -28,6 +38,8 @@ function statement(invoice, plays) {
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
+        * */
+        let thisAmount = amountFor(perf, play)
 
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
@@ -40,6 +52,36 @@ function statement(invoice, plays) {
     }
     result += `Amount owed is ${format(totalAmount / 100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
+    return result;
+}
+
+/**
+ * 1.将计算amount的部分抽离出来
+ * 2.提升表达能力,给变量改名,使他们更简洁
+ *  thisAmount -> result
+ * 3.动态类型语言,参数名默认带类型
+ * @param perf
+ * @param play
+ */
+function amountFor(perf, play) {
+    let result = 0;
+    switch (play.type) {
+        case "tragedy":
+            result = 40000;
+            if (perf.audience > 30) {
+                result += 1000 * (perf.audience - 30);
+            }
+            break;
+        case "comedy":
+            result = 30000;
+            if (perf.audience > 20) {
+                result += 10000 + 500 * (perf.audience - 20);
+            }
+            result += 300 * perf.audience;
+            break;
+        default:
+            throw new Error(`unknown type: ${play.type}`);
+    }
     return result;
 }
 
